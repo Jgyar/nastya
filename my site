@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой сайт</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, Arial, sans-serif; }
+
+  :root {
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #666;
+    --accent: #4f46e5;
+    --accent2: #7c3aed;
+    --border: #e0e0e0;
+  }
+
+  body.dark {
+    --bg: #111827;
+    --card: #1f2937;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
+    --border: #374151;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+    padding-bottom: 80px;
+  }
+
+  /* Шапка */
+  header {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+
+  header h1 { font-size: 1.3em; }
+
+  #themeBtn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.4em;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  #themeBtn:active { transform: scale(0.9); }
+
+  /* Страницы */
+  .page { display: none; padding: 20px; max-width: 600px; margin: 0 auto; animation: fade 0.3s; }
+  .page.active { display: block; }
+
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+  }
+
+  h2 { margin-bottom: 12px; font-size: 1.4em; }
+  p { color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+
+  button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 4px 2px;
+  }
+
+  button:active { transform: scale(0.96); background: var(--accent2); }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1em;
+    margin-bottom: 10px;
+  }
+
+  /* Калькулятор */
+  .calc-display {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: right;
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 12px;
+    min-height: 70px;
+    word-break: break-all;
+    border: 1px solid var(--border);
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .calc-grid button {
+    padding: 18px 0;
+    font-size: 1.2em;
+    margin: 0;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .calc-grid button.op { background: var(--accent); color: white; }
+  .calc-grid button.eq { background: #10b981; color: white; }
+
+  /* Задачи */
+  .task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .task span { flex: 1; }
+  .task.done span { text-decoration: line-through; opacity: 0.5; }
+  .task .del { background: #ef4444; padding: 8px 12px; margin: 0; }
+
+  /* Таймер */
+  .timer-display {
+    font-size: 3.5em;
+    font-weight: bold;
+    text-align: center;
+    color: var(--accent);
+    margin: 20px 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Навигация внизу */
+  nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    z-index: 100;
+  }
+
+  nav button {
+    background: none;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.7em;
+    padding: 8px 12px;
+    margin: 0;
+    flex: 1;
+    border-radius: 10px;
+  }
+
+  nav button.active { color: var(--accent); background: rgba(79,70,229,0.1); }
+  nav button .icon { font-size: 1.5em; }
+
+  .center { text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌟 Мой сайт</h1>
+  <button id="themeBtn" onclick="toggleTheme()">🌙</button>
+</header>
+
+<!-- ГЛАВНАЯ -->
+<section class="page active" id="home">
+  <div class="card">
+    <h2>👋 Добро пожаловать!</h2>
+    <p>Это многостраничный сайт с несколькими рабочими функциями. Всё работает прямо в браузере твоего телефона.</p>
+    <p>Используй меню внизу, чтобы переключаться между разделами.</p>
+  </div>
+
+  <div class="card center">
+    <h2>📊 Счётчик</h2>
+    <p>Ты заходил сюда <b id="visitCount" style="font-size:1.5em;color:var(--accent)">0</b> раз</p>
+    <button onclick="resetCounter()">Сбросить</button>
+  </div>
+
+  <div class="card">
+    <h2>ℹ️ Что тут есть</h2>
+    <p>🧮 Калькулятор — считай как хочешь</p>
+    <p>✅ Задачи — веди список дел (сохраняется)</p>
+    <p>⏰ Таймер — обратный отсчёт</p>
+    <p>🎨 Тема — переключи светлую/тёмную</p>
+  </div>
+</section>
+
+<!-- КАЛЬКУЛЯТОР -->
+<section class="page" id="calc">
+  <div class="card">
+    <h2>🧮 Калькулятор</h2>
+    <div class="calc-display" id="display">0</div>
+    <div class="calc-grid">
+      <button class="op" onclick="calcClear()">C</button>
+      <button class="op" onclick="calcBack()">⌫</button>
+      <button class="op" onclick="calcInput('%')">%</button>
+      <button class="op" onclick="calcInput('/')">÷</button>
+
+      <button onclick="calcInput('7')">7</button>
+      <button onclick="calcInput('8')">8</button>
+      <button onclick="calcInput('9')">9</button>
+      <button class="op" onclick="calcInput('*')">×</button>
+
+      <button onclick="calcInput('4')">4</button>
+      <button onclick="calcInput('5')">5</button>
+      <button onclick="calcInput('6')">6</button>
+      <button class="op" onclick="calcInput('-')">−</button>
+
+      <button onclick="calcInput('1')">1</button>
+      <button onclick="calcInput('2')">2</button>
+      <button onclick="calcInput('3')">3</button>
+      <button class="op" onclick="calcInput('+')">+</button>
+
+      <button onclick="calcInput('0')" style="grid-column: span 2;">0</button>
+      <button onclick="calcInput('.')">.</button>
+      <button class="eq" onclick="calcEqual()">=</button>
+    </div>
+  </div>
+</section>
+
+<!-- ЗАДАЧИ -->
+<section class="page" id="tasks">
+  <div class="card">
+    <h2>✅ Список задач</h2>
+    <input type="text" id="taskInput" placeholder="Введи задачу..." onkeydown="if(event.key==='Enter')addTask()">
+    <button onclick="addTask()" style="width:100%">➕ Добавить</button>
+  </div>
+
+  <div class="card">
+    <h2>📝 Мои задачи</h2>
+    <div id="taskList"></div>
+    <p id="emptyMsg" class="center" style="padding:20px">Пока пусто. Добавь первую задачу!</p>
+    <button onclick="clearTasks()" style="width:100%;background:#ef4444;margin-top:10px">🗑 Очистить всё</button>
+  </div>
+</section>
+
+<!-- ТАЙМЕР -->
+<section class="page" id="timer">
+  <div class="card">
+    <h2>⏰ Таймер</h2>
+    <div class="timer-display" id="timerDisplay">00:00</div>
+
+    <div class="center" style="margin-bottom:15px">
+      <button onclick="setTimer(60)">1 мин</button>
+      <button onclick="setTimer(180)">3 мин</button>
+      <button onclick="setTimer(300)">5 мин</button>
+    </div>
+
+    <div class="center">
+      <button onclick="startTimer()" style="background:#10b981">▶ Старт</button>
+      <button onclick="pauseTimer()" style="background:#f59e0b">⏸ Пауза</button>
+      <button onclick="resetTimer()" style="background:#ef4444">⏹ Сброс</button>
+    </div>
+  </div>
+</section>
+
+<!-- НАВИГАЦИЯ -->
+<nav>
+  <button class="active" onclick="showPage('home', this)">
+    <span class="icon">🏠</span>Главная
+  </button>
+  <button onclick="showPage('calc', this)">
+    <span class="icon">🧮</span>Кальк
+  </button>
+  <button onclick="showPage('tasks', this)">
+    <span class="icon">✅</span>Задачи
+  </button>
+  <button onclick="showPage('timer', this)">
+    <span class="icon">⏰</span>Таймер
+  </button>
+</nav>
+
+<script>
+// ===== НАВИГАЦИЯ =====
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ===== ТЕМА =====
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Загружаем тему
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+  document.getElementById('themeBtn').textContent = '☀️';
+}
+
+// ===== СЧЁТЧИК =====
+let visits = parseInt(localStorage.getItem('visits') || '0') + 1;
+localStorage.setItem('visits', visits);
+document.getElementById('visitCount').textContent = visits;
+
+function resetCounter() {
+  localStorage.setItem('visits', '0');
+  document.getElementById('visitCount').textContent = '0';
+}
+
+// ===== КАЛЬКУЛЯТОР =====
+let calcExpr = '';
+
+function calcInput(v) {
+  calcExpr += v;
+  document.getElementById('display').textContent = calcExpr;
+}
+
+function calcClear() {
+  calcExpr = '';
+  document.getElementById('display').textContent = '0';
+}
+
+function calcBack() {
+  calcExpr = calcExpr.slice(0, -1);
+  document.getElementById('display').textContent = calcExpr || '0';
+}
+
+function calcEqual() {
+  try {
+    const result = eval(calcExpr.replace(/%/g, '/100'));
+    document.getElementById('display').textContent = result;
+    calcExpr = String(result);
+  } catch {
+    document.getElementById('display').textContent = 'Ошибка';
+    calcExpr = '';
+  }
+}
+
+// ===== ЗАДАЧИ =====
+let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+function renderTasks() {
+  const list = document.getElementById('taskList');
+  list.innerHTML = '';
+  document.getElementById('emptyMsg').style.display = tasks.length ? 'none' : 'block';
+
+  tasks.forEach((task, i) => {
+    const div = document.createElement('div');
+    div.className = 'task' + (task.done ? ' done' : '');
+    div.innerHTML = `
+      <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${i})" style="width:auto;margin:0">
+      <span>${escapeHtml(task.text)}</span>
+      <button class="del" onclick="deleteTask(${i})">✕</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function addTask() {
+  const input = document.getElementById('taskInput');
+  const text = input.value.trim();
+  if (!text) return;
+  tasks.push({ text, done: false });
+  input.value = '';
+  saveTasks();
+}
+
+function toggleTask(i) {
+  tasks[i].done = !tasks[i].done;
+  saveTasks();
+}
+
+function deleteTask(i) {
+  tasks.splice(i, 1);
+  saveTasks();
+}
+
+function clearTasks() {
+  if (tasks.length && confirm('Удалить все задачи?')) {
+    tasks = [];
+    saveTasks();
+  }
+}
+
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  renderTasks();
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+renderTasks();
+
+// ===== ТАЙМЕР =====
+let timerSeconds = 0;
+let timerInterval = null;
+
+function updateTimerDisplay() {
+  const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+  const s = String(timerSeconds % 60).padStart(2, '0');
+  document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+}
+
+function setTimer(sec) {
+  pauseTimer();
+  timerSeconds = sec;
+  updateTimerDisplay();
+}
+
+function startTimer() {
+  if (timerInterval) return;
+  if (timerSeconds === 0) return;
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      pauseTimer();
+      alert('⏰ Время вышло!');
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function resetTimer() {
+  pauseTimer();
+  timerSeconds = 0;
+  updateTimerDisplay();
+}
+
+updateTimerDisplay();
+</script>
+</body>
+</html>
